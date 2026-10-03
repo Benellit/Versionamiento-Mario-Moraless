@@ -1,22 +1,23 @@
 body {
-    background: linear-gradient(#8412B0, #000);
-    font-family: 'Consolas', sans-serif;
+    background: linear-gradient(#ff9800, #e65100);
+    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    
     align-items: center;
 }
 
 h1 {
-    color: #FFF;
+    color: #fff;
     text-align: center;
     margin-top: 20px;
     font-size: 2.5em;
     display: inline;
-    text-shadow: 0 0 10px #FC199A, 0 0 20px #FC199A, 0 0 30px #FC199A, 0 0 40px #FF007F, 0 0 50px #FF007F;
+    text-shadow: none;
 }
 
 .container {
@@ -31,7 +32,7 @@ h1 {
 
 .formContainer {
     text-align: center;
-    background-color: #FF007F;
+    background-color: #ef6c00;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
@@ -40,7 +41,7 @@ h1 {
 }
 
 label {
-    color: #00FFFF;
+    color: #fff;
     font-size: 14px;
     margin-right: 10px;
 }
@@ -53,21 +54,23 @@ input {
     border: 1px solid #ccc;
     width: 100%;
     box-sizing: border-box;
+    font-family: Arial, sans-serif;
 }
 
 button {
-    background-color: #FFCC00;
-    color: #8412B0;
+    background-color: #fff3e0;
+    color: #bf360c;
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
+    font-family: Arial, sans-serif;
     font-size: 14px;
     width: 100%;
 }
 
 button:hover {
-    background-color: #FC199A;
+    background-color: #bf360c;
     color: #fff;
 }
 
@@ -84,30 +87,31 @@ th, td {
 }
 
 th {
-    background-color: #FC199A;
-    color: white;
+    background-color: #e65100;
+    color: #fff;
 }
 
 td {
-    background-color: #00FFFF;
-    color: #8412B0;
+    background-color: #fff3e0;
+    color: #4e2600;
 }
 
 .delete-btn {
-    background-color: #f0745e;
-    color: white;
+    background-color: #e65100;
+    color: #fff;
     border: none;
     padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
 }
 
+
+
 .delete-btn:hover {
-    background-color: #ff0800;
+    background-color: #bf360c;
 }
 
-
 #productsTable tbody tr {
-    background-color: #FFF;
-    color: #000;
+    background-color: #fff3e0;
+    color: #4e2600;
 }
