@@ -1,43 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Práctica: Control de versiones</title>
-
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Lista de productos - Inventario</h1>
 
     <div class="container">
-
         <div class="formContainer">
+            <label for="search">Buscar producto:</label>
+            <input type="search" id="search" placeholder="Buscar por nombre">
+
             <label for="name">Nombre del producto:</label>
             <input type="text" id="name" placeholder="Ingresa el nombre del producto">
-            
+
             <label for="price">Precio:</label>
             <input type="number" id="price" placeholder="Ingresa el precio del producto" min="1">
-            
+
             <button id="addProduct">Agregar producto</button>
+
+            <p>Total de productos: <span id="totalProducts">0</span></p>
         </div>
 
-      
         <table id="productsTable">
+
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Nombre</th>
                     <th>Precio</th>
-                    <th>Editar</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-          
             </tbody>
         </table>
     </div>
-
 
     <script src="functions.js"></script>
 </body>
