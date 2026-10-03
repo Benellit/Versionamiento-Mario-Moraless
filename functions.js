@@ -18,6 +18,8 @@ request.onupgradeneeded = function(event) {
 
 //Load/Read products from IndexedDB and display them in the table
 function loadProductTable() {
+    if (!db) return;
+
     const transaction = db.transaction(['products'], 'readonly');
     const store = transaction.objectStore('products');
 
@@ -25,10 +27,15 @@ function loadProductTable() {
 
     request.onsuccess = function(event) {
         const products = event.target.result;
+        const search = document.getElementById('search').value.trim().toLowerCase();
+        document.getElementById('totalProducts').textContent = products.length;
+
         const tableBody = document.querySelector('#productsTable tbody');
         tableBody.innerHTML = ''; // Clear the table before adding new products
 
         products.forEach(product => {
+            if (!product.name.toLowerCase().includes(search)) return;
+
             //Create a table row
             const row = document.createElement('tr');
             row.innerHTML = `
@@ -40,7 +47,7 @@ function loadProductTable() {
             tableBody.appendChild(row);
         });
 
-    //Add event listeners for delete buttons
+        //Add event listeners for delete buttons
         document.querySelectorAll('.delete-btn').forEach(button => {
             button.addEventListener('click', deleteProduct);
         });
@@ -72,13 +79,13 @@ function addProduct() {
             price: price
         };
 
-    //Add/Create the new product to the DB
+        //Add/Create the new product to the DB
         store.add(newProduct);
         //Clear the form fields
         document.getElementById('name').value = '';
         document.getElementById('price').value = '';
 
-    //Update the table with the new product
+        //Update the table with the new product
         loadProductTable();
     };
 }
@@ -98,3 +105,4 @@ function deleteProduct(event) {
 
 //Event listener for the button click
 document.getElementById('addProduct').addEventListener('click', addProduct);
+document.getElementById('search').addEventListener('input', loadProductTable);
