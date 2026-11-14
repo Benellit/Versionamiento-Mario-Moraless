@@ -1,108 +1,138 @@
-// Open (or create) the database with the version 1
 let db;
 const request = indexedDB.open('exampleProductDB', 1);
 
 request.onerror = function(event) {
-    console.error("Database error: ", event.target.error);
+    console.error('Database error:', event.target.error);
 };
 
 request.onsuccess = function(event) {
     db = event.target.result;
-    loadProductTable(); // Load products after the database is opened
+    loadProductTable();
 };
 
 request.onupgradeneeded = function(event) {
     db = event.target.result;
-    db.createObjectStore('products', { keyPath: 'id' });
+    if (!db.objectStoreNames.contains('products')) {
+        db.createObjectStore('products', { keyPath: 'id' });
+    }
 };
 
-//Load/Read products from IndexedDB and display them in the table
 function loadProductTable() {
     if (!db) return;
 
     const transaction = db.transaction(['products'], 'readonly');
     const store = transaction.objectStore('products');
+    const query = store.getAll();
 
-    const request = store.getAll();
-
-    request.onsuccess = function(event) {
+    query.onsuccess = function(event) {
         const products = event.target.result;
         const search = document.getElementById('search').value.trim().toLowerCase();
         document.getElementById('totalProducts').textContent = products.length;
 
         const tableBody = document.querySelector('#productsTable tbody');
-        tableBody.innerHTML = ''; // Clear the table before adding new products
+        tableBody.replaceChildren();
 
         products.forEach(product => {
             if (!product.name.toLowerCase().includes(search)) return;
 
-            //Create a table row
             const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${product.id}</td>
-                <td>${product.name}</td>
-                <td>$${product.price}</td>
-                <td><button class="delete-btn" data-id="${product.id}">Delete</button></td>
-            `;
-            tableBody.appendChild(row);
-        });
+            const idCell = document.createElement('td');
+            const nameCell = document.createElement('td');
+            const priceCell = document.createElement('td');
+            const actionCell = document.createElement('td');
+            const deleteButton = document.createElement('button');
 
-        //Add event listeners for delete buttons
-        document.querySelectorAll('.delete-btn').forEach(button => {
-            button.addEventListener('click', deleteProduct);
+            idCell.textContent = product.id;
+            nameCell.textContent = product.name;
+            priceCell.textContent = '$' + Number(product.price).toFixed(2);
+            deleteButton.className = 'delete-btn';
+            deleteButton.dataset.id = product.id;
+            deleteButton.type = 'button';
+            deleteButton.setAttribute('aria-label', 'Eliminar ' + product.name);
+            deleteButton.title = 'Eliminar producto';
+            deleteButton.addEventListener('click', deleteProduct);
+
+            actionCell.appendChild(deleteButton);
+            row.append(idCell, nameCell, priceCell, actionCell);
+            tableBody.appendChild(row);
         });
     };
 }
 
-//Add/Create a new product
-function addProduct() {
-    const name = document.getElementById('name').value.trim();
-    const price = parseFloat(document.getElementById('price').value);
+function launchConfetti() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    //Validate inputs
-    if (!name || isNaN(price) || price <= 0) {
-        alert("Please enter a valid name and price.");
+    const shell = document.querySelector('.app-shell').getBoundingClientRect();
+    const layer = document.getElementById('confetti-layer');
+    const tones = ['#a56b4f', '#b88463', '#d5ac85', '#8c5a3d', '#e0c5a1', '#c18c72'];
+    const count = 46;
+
+    for (let i = 0; i < count; i++) {
+        const side = i % 2 === 0 ? -1 : 1;
+        const piece = document.createElement('span');
+        const originX = side < 0 ? shell.left + 8 : shell.right - 8;
+        const originY = shell.top + shell.height * (.27 + Math.random() * .49);
+        const travelX = side * (60 + Math.random() * 135);
+        const travelY = -110 + Math.random() * 260;
+
+        piece.className = 'confetti-piece';
+        piece.style.setProperty('--x', originX + 'px');
+        piece.style.setProperty('--y', originY + 'px');
+        piece.style.setProperty('--dx', travelX + 'px');
+        piece.style.setProperty('--dy', travelY + 'px');
+        piece.style.setProperty('--size', (5 + Math.random() * 8) + 'px');
+        piece.style.setProperty('--rotation', (Math.random() * 360) + 'deg');
+        piece.style.setProperty('--tone', tones[Math.floor(Math.random() * tones.length)]);
+        piece.style.animationDelay = Math.round(Math.random() * 140) + 'ms';
+        piece.addEventListener('animationend', () => piece.remove(), { once: true });
+        layer.appendChild(piece);
+    }
+}
+
+function addProduct() {
+    if (!db) return;
+
+    const name = document.getElementById('name').value.trim();
+    const price = Number(document.getElementById('price').value);
+
+    if (!name || !Number.isFinite(price) || price <= 0) {
+        alert('Ingresa un nombre y un precio válidos.');
         return;
     }
 
     const transaction = db.transaction(['products'], 'readwrite');
     const store = transaction.objectStore('products');
+    const query = store.getAll();
 
-    //Get/Read the products
-    const getAllRequest = store.getAll();
-
-    getAllRequest.onsuccess = function(event) {
+    query.onsuccess = function(event) {
         const products = event.target.result;
-        const newProduct = {
-            id: products.length > 0 ? products[products.length - 1].id + 1 : 1, // Assign an incremental ID
-            name: name,
-            price: price
-        };
+        const nextId = products.reduce((max, product) => Math.max(max, product.id), 0) + 1;
+        store.add({ id: nextId, name, price });
+    };
 
-        //Add/Create the new product to the DB
-        store.add(newProduct);
-        //Clear the form fields
+    transaction.oncomplete = function() {
         document.getElementById('name').value = '';
         document.getElementById('price').value = '';
-
-        //Update the table with the new product
         loadProductTable();
+        launchConfetti();
+    };
+
+    transaction.onerror = function(event) {
+        console.error('No se pudo agregar el producto:', event.target.error);
     };
 }
 
-//Delete a product
 function deleteProduct(event) {
-    const productId = parseInt(event.target.getAttribute('data-id')); // Get the product ID from the button's data attribute
+    if (!db) return;
+
+    const productId = Number(event.currentTarget.dataset.id);
     const transaction = db.transaction(['products'], 'readwrite');
-    const store = transaction.objectStore('products');
-
-    //Delete the product with the corresponding ID
-    store.delete(productId);
-
-    //Reload the product table to reflect changes
-    loadProductTable();
+    transaction.objectStore('products').delete(productId);
+    transaction.oncomplete = loadProductTable;
+    transaction.onerror = function(error) {
+        console.error('No se pudo eliminar el producto:', error);
+    };
 }
 
-//Event listener for the button click
 document.getElementById('addProduct').addEventListener('click', addProduct);
 document.getElementById('search').addEventListener('input', loadProductTable);
