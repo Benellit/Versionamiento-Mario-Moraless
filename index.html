@@ -8,16 +8,12 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div id="confetti-layer" aria-hidden="true"></div>
     <main class="app-shell">
-        <header class="app-header">
-            <div class="brand"><span class="brand-icon" aria-hidden="true">▣</span><span>Inventario<span class="brand-dot">.</span></span></div>
-            <span class="header-label">Administración de productos</span>
-        </header>
+        <h1 id="inventory-title">Lista de Productos - Inventario Practica</h1>
 
         <div class="workspace">
             <section class="inventory" aria-labelledby="inventory-title">
-                <p class="eyebrow">PANEL DE PRODUCTOS</p>
-                <h1 id="inventory-title">Lista de Productos -<br>Inventario Practica</h1>
                 <div class="inventory-summary">
                     <span>Cantidad total de productos</span>
                     <span class="product-count"><strong id="totalProducts">0</strong> productos</span>
@@ -34,7 +30,6 @@
 
             <aside class="sidebar" aria-label="Controles del inventario">
                 <section class="control-card search-card" aria-labelledby="search-title">
-                    <p class="card-eyebrow">CONSULTAR</p>
                     <h2 id="search-title">Buscar producto</h2>
                     <label for="search">Nombre del producto</label>
                     <div class="search-wrap">
@@ -44,7 +39,6 @@
                 </section>
 
                 <section class="control-card create-card formContainer" aria-labelledby="create-title">
-                    <p class="card-eyebrow">GESTIONAR</p>
                     <h2 id="create-title">Nuevo producto</h2>
                     <p class="card-description">Agrega un producto a tu inventario.</p>
                     <label for="name">Nombre del producto</label>
