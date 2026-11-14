@@ -3,43 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Práctica: Control de versiones</title>
+    <meta name="theme-color" content="#f2e7db">
+    <title>Lista de Productos - Inventario Practica</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Lista de productos - Inventario</h1>
+    <main class="app-shell">
+        <header class="app-header">
+            <div class="brand"><span class="brand-icon" aria-hidden="true">▣</span><span>Inventario<span class="brand-dot">.</span></span></div>
+            <span class="header-label">Administración de productos</span>
+        </header>
 
-    <div class="container">
-        <div class="formContainer">
-            <label for="search">Buscar producto:</label>
-            <input type="search" id="search" placeholder="Buscar por nombre">
+        <div class="workspace">
+            <section class="inventory" aria-labelledby="inventory-title">
+                <p class="eyebrow">PANEL DE PRODUCTOS</p>
+                <h1 id="inventory-title">Lista de Productos -<br>Inventario Practica</h1>
+                <div class="inventory-summary">
+                    <span>Cantidad total de productos</span>
+                    <span class="product-count"><strong id="totalProducts">0</strong> productos</span>
+                </div>
+                <div class="table-scroll">
+                    <table id="productsTable">
+                        <thead>
+                            <tr><th scope="col">ID</th><th scope="col">Nombre</th><th scope="col">Precio</th><th scope="col" class="action-heading">Acción</th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
 
-            <label for="name">Nombre del producto:</label>
-            <input type="text" id="name" placeholder="Ingresa el nombre del producto">
+            <aside class="sidebar" aria-label="Controles del inventario">
+                <section class="control-card search-card" aria-labelledby="search-title">
+                    <p class="card-eyebrow">CONSULTAR</p>
+                    <h2 id="search-title">Buscar producto</h2>
+                    <label for="search">Nombre del producto</label>
+                    <div class="search-wrap">
+                        <span class="search-icon" aria-hidden="true">⌕</span>
+                        <input type="search" id="search" placeholder="Buscar por nombre" autocomplete="off">
+                    </div>
+                </section>
 
-            <label for="price">Precio:</label>
-            <input type="number" id="price" placeholder="Ingresa el precio del producto" min="1">
-
-            <button id="addProduct">Agregar producto</button>
-
-            <p>Total de productos: <span id="totalProducts">0</span></p>
+                <section class="control-card create-card formContainer" aria-labelledby="create-title">
+                    <p class="card-eyebrow">GESTIONAR</p>
+                    <h2 id="create-title">Nuevo producto</h2>
+                    <p class="card-description">Agrega un producto a tu inventario.</p>
+                    <label for="name">Nombre del producto</label>
+                    <input type="text" id="name" placeholder="Ingresa el nombre" autocomplete="off">
+                    <label for="price">Precio</label>
+                    <input type="number" id="price" placeholder="0.00" min="0.01" step="0.01">
+                    <button id="addProduct" type="button"><span aria-hidden="true">＋</span> Agregar producto</button>
+                </section>
+            </aside>
         </div>
-
-        <table id="productsTable">
-
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Precio</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-    </div>
-
+    </main>
     <script src="functions.js"></script>
 </body>
 </html>
